@@ -5,6 +5,8 @@ import Add from "../pages/admin/add/add"
 import Error from "../pages/error/error/error"
 import SiteRoot from "../pages/site/SiteRoot"
 import Home from "../pages/site/home/home"
+import Details from "../pages/admin/details/Details"
+import Qrcode from "../pages/site/QrCode/Qrcode"
 
 const ROUTES =[
     {
@@ -14,6 +16,10 @@ const ROUTES =[
             {
                 path:"",
                 element:<Home/>
+            },
+            {
+                path:"qr/:id",
+                element:<Qrcode/>
             }
         ]
     },
@@ -28,6 +34,10 @@ const ROUTES =[
             {
                 path:"add",
                 element:<Add/>
+            },
+            {
+                path:"details/:id",
+                element:<Details/>
             }
         ]
     }
