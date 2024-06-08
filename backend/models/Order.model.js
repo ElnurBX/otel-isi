@@ -21,7 +21,7 @@ const Order = mongoose.model("Order", new mongoose.Schema({
   },
   child: {
     type: Number,
-  },
+  }
   
 }));
 
