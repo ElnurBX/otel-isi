@@ -5,7 +5,7 @@ const Qrcode = () => {
   const {id }=useParams()
   console.log(`https://aquaparkqr.netlify.app//details/${id}`);
   return (
-    <div className='ml-5 mt-5 d-flex justify-content-center'>
+    <div className='ml-5 mt-5 d-flex justify-content-center p-2'>
       <QRCode 
       value={`https://aquaparkqr.netlify.app//details/${id}`}
       size={300}
