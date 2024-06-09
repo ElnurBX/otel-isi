@@ -48,6 +48,8 @@ const deleteUser = async (req, res) => {
         const { id } = req.params;
         await User.findByIdAndDelete(id);
         res.status(200).json({ message: "User deleted successfully" });
+        const items = await User.find();
+        res.send(items);
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
