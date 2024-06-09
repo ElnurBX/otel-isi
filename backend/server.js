@@ -2,6 +2,7 @@
   const cors = require('cors');
   const mongoose = require('mongoose');
   const userRoutes = require('./routes/userRoutes');
+const { Order } = require('./models/Order.model');
   require('dotenv').config();
 
   const app = express();
@@ -26,3 +27,6 @@
 
   // Kullanıcı rotalarını ekle
   app.use('/api', userRoutes);
+
+  const OrderRouter = require("./routes/Order.routes");
+  app.use("/api/order", OrderRouter);
