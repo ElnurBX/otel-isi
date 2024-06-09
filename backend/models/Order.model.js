@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const Order = mongoose.model("Order", new mongoose.Schema({
+const OrderSchema = new mongoose.Schema({
   name: {
     type: String,
   },
@@ -21,8 +21,17 @@ const Order = mongoose.model("Order", new mongoose.Schema({
   },
   child: {
     type: Number,
+  },
+  createTime: {
+    type: Date,
+    default: Date.now
+  },
+  complete: {
+    type: Boolean,
+    default: false
   }
-  
-}));
+});
+
+const Order = mongoose.model("Order", OrderSchema);
 
 module.exports = { Order };
