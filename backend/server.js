@@ -1,32 +1,31 @@
-  const express = require('express');
-  const cors = require('cors');
-  const mongoose = require('mongoose');
-  const userRoutes = require('./routes/userRoutes');
-const { Order } = require('./models/Order.model');
-  require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const userRoutes = require('./routes/userRoutes');
+const OrderRouter = require("./routes/Order.routes");
+require('dotenv').config();
 
-  const app = express();
-  const PORT = process.env.PORT || 10000;
+const app = express();
+const PORT = process.env.PORT || 10000;
 
-  app.use(cors());
-  app.use(express.json());
+app.use(cors());
+app.use(express.json());
 
-  // MongoDB'ye bağlan
-  mongoose.connect(process.env.CONNECTION_STRING, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-  }).then(() => {
-      console.log('Connected to MongoDB');
-      // Uygulama dinlemeye başla
-      app.listen(PORT, () => {
-          console.log(`Server running on port ${PORT}`);
-      });
-  }).catch((error) => {
-      console.error('MongoDB connection error:', error);
+// MongoDB'ye bağlan
+mongoose.connect(process.env.CONNECTION_STRING, {})
+  .then(() => {
+    console.log('Connected to MongoDB');
+    // Uygulama dinlemeye başla
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error('MongoDB connection error:', error.message);
   });
 
-  // Kullanıcı rotalarını ekle
-  app.use('/api', userRoutes);
+// Kullanıcı rotalarını ekle
+app.use('/api', userRoutes);
 
-  const OrderRouter = require("./routes/Order.routes");
-  app.use("/api/order", OrderRouter);
+// Sipariş rotalarını ekle
+app.use("/api/order", OrderRouter);
