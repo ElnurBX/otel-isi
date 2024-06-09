@@ -22,6 +22,9 @@ const OrderSchema = new mongoose.Schema({
   child: {
     type: Number,
   },
+  food: {
+    type: Number,
+  },
   createTime: {
     type: Date,
     default: Date.now
