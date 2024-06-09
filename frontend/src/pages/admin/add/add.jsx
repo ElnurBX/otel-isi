@@ -6,7 +6,6 @@
     import axios from 'axios';
     const Add = () => {
         const [result, setresult] = useState([])
-        const[details,setdetails]=useState([])
         const {data,setdata} = useContext(MainContext)
         const Price = (data) => {
             return ((data.person*20)+(data.teenager*15)+(data.child*0))
