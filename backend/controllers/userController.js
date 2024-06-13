@@ -1,14 +1,31 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
+const verifyToken = (req, res, next) => {
+    const token = req.body.token;
+
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded.username; 
+        return res.status(200).json({ message: 'Token is valid', username: decoded.username, role: decoded.role }); // Kullanıcı rolünü de döndürüyoruz
+    } catch (error) {
+        console.error('Token verification error:', error.message);
+        return res.status(401).json({ message: 'Invalid token', error: error.message });
+    }
+};
+
 const registerUser = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, role } = req.body;
         let existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
         }
-        const newUser = new User({ username, email, password });
+        const newUser = new User({ username, email, password, role });
         await newUser.save();
         res.status(201).json({ message: "User registered successfully", user: newUser });
     } catch (error) {
@@ -27,8 +44,8 @@ const loginUser = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid credentials" });
         }
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ message: "Login successful", token });
+        const token = jwt.sign({ userId: user._id, username: user.username, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.json({ message: "Login successful", token, username: user.username, role: user.role });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
@@ -45,20 +62,27 @@ const getAllUsers = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     try {
-        const { id } = req.params;
-        await User.findByIdAndDelete(id);
-        const items = await User.find();
-        res.send(items);
-        res.status(200).json({ message: "User deleted successfully", users: items }); 
+        const userId = req.params.id;
+        const user = await User.findByIdAndDelete(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const remainingUsers = await User.find(); 
+        res.status(200).json({ message: 'User deleted successfully', users: remainingUsers });
     } catch (error) {
-        res.status(500).json({ message: "Server error", error: error.message });
+        console.error('Error deleting user:', error);
+        if (!res.headersSent) {
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
     }
 };
-
 
 module.exports = {
     registerUser,
     loginUser,
     getAllUsers,
-    deleteUser
+    deleteUser,
+    verifyToken 
 };
